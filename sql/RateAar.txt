@@ -89,9 +89,6 @@ let
         {"Oppstart",               Int64.Type},
         {"RateAdjusted",           Int64.Type},
         {"Ujustert",               Int64.Type}
-    }, "en-US"),
-    // Testfiltre – fjernes senere
-    #"Filtered Rows" = Table.SelectRows(#"Endret type", each Text.Contains([EmployeeNumber], "106934")),
-    #"Filtered Rows1" = Table.SelectRows(#"Filtered Rows", each ([ProjectNumber] = "10209127-05"))
+    }, "en-US")
 in
-    #"Filtered Rows1"
+    #"Endret type"
