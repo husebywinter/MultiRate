@@ -1,7 +1,7 @@
 {
   "name": "rateadjustmentvisual",
   "description": "Timerate per prosjekt og år: kost ved siste justering, kostøkning, profitt, justering og gap til forventet rate.",
-  "version": "1.1.0.0",
+  "version": "1.2.0.0",
   "license": "MIT",
   "scripts": {
     "pbiviz": "pbiviz",

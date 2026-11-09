@@ -38,10 +38,10 @@ const color = (name: string, displayName: string, value: string) =>
     new formattingSettings.ColorPicker({ name, displayName, value: { value } });
 
 class ColorsCard extends Card {
-    costAtAdj = color("costAtAdj", "Kost ved forrige justering", "#B4B2A9");
-    costIncrease = color("costIncrease", "Kostøkning siden da", "#EF9F27");
-    profit = color("profit", "Profitt", "#639922");
-    adjustment = color("adjustment", "Justering dette året", "#27500A");
+    costAtAdj = color("costAtAdj", "Kost ved forrige justering", "#F2DD7A");
+    costIncrease = color("costIncrease", "Kostøkning siden da", "#D9AF0B");
+    profit = color("profit", "Profitt fra før", "#639922");
+    adjustment = color("adjustment", "Profitt: årets justering", "#3B6D11");
     gap = color("gap", "Gap til forventet rate", "#E24B4A");
     statusOk = color("statusOk", "Status: justert", "#1D9E75");
     statusBad = color("statusBad", "Status: ujustert", "#E24B4A");

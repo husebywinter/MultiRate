@@ -174,14 +174,22 @@ export function renderChart(container: HTMLElement, rows: RowData[], o: ChartOpt
         const lg = document.createElement("div");
         lg.className = "rav-legend";
         lg.style.fontSize = `${fontBase}px`;
-        const items: [string, string, boolean][] = [
-            ["Kost ved forrige justering", o.colors.costAtAdj, false],
-            ["Kostøkning siden da", o.colors.costIncrease, false],
-            ["Profitt", o.colors.profit, false],
-            ["Justering dette året", o.colors.adjustment, false],
-            [`Gap til forventet rate (${(g * 100).toLocaleString("nb-NO")} %/år)`, o.colors.gap, true]
+        const groupsLg: [string, [string, string, boolean][]][] = [
+            ["Kost:", [["ved forrige justering", o.colors.costAtAdj, false], ["økning siden", o.colors.costIncrease, false]]],
+            ["Profitt:", [["fra før", o.colors.profit, false], ["årets justering", o.colors.adjustment, false]]],
+            ["", [[`Gap til forventet rate (${(g * 100).toLocaleString("nb-NO")} %/år)`, o.colors.gap, true]]]
         ];
-        for (const [label, c, hatch] of items) {
+        for (const [title, items] of groupsLg) {
+          const grpEl = document.createElement("span");
+          grpEl.className = "rav-legend-group";
+          if (title) {
+            const t = document.createElement("span");
+            t.className = "rav-legend-title";
+            t.textContent = title;
+            grpEl.appendChild(t);
+          }
+          lg.appendChild(grpEl);
+          for (const [label, c, hatch] of items) {
             const it = document.createElement("span");
             it.className = "rav-legend-item";
             const sw = document.createElement("span");
@@ -196,7 +204,8 @@ export function renderChart(container: HTMLElement, rows: RowData[], o: ChartOpt
             const tx = document.createElement("span");
             tx.textContent = label;
             it.appendChild(tx);
-            lg.appendChild(it);
+            grpEl.appendChild(it);
+          }
         }
         container.appendChild(lg);
         legendH = lg.offsetHeight + 4;
@@ -309,10 +318,10 @@ export function renderChart(container: HTMLElement, rows: RowData[], o: ChartOpt
 
             const by = cy - barH / 2;
             const parts: { v: number; color: string; label: string; labelColor: string; hatch?: boolean }[] = [
-                { v: seg.s1, color: o.colors.costAtAdj, label: fmt(seg.s1), labelColor: "#2C2C2A" },
-                { v: seg.s2, color: o.colors.costIncrease, label: `+${fmt(seg.s2)}`, labelColor: "#412402" },
-                { v: seg.s3, color: o.colors.profit, label: fmt(seg.s3), labelColor: "#173404" },
-                { v: seg.s4, color: o.colors.adjustment, label: `+${fmt(seg.s4)}`, labelColor: "#EAF3DE" },
+                { v: seg.s1, color: o.colors.costAtAdj, label: fmt(seg.s1), labelColor: "#4A3F00" },
+                { v: seg.s2, color: o.colors.costIncrease, label: `+${fmt(seg.s2)}`, labelColor: "#3D3400" },
+                { v: seg.s3, color: o.colors.profit, label: fmt(seg.s3), labelColor: "#FFFFFF" },
+                { v: seg.s4, color: o.colors.adjustment, label: `+${fmt(seg.s4)}`, labelColor: "#FFFFFF" },
                 { v: seg.s5, color: o.colors.gap, label: `+${fmt(seg.s5)}`, labelColor: o.colors.gap, hatch: true }
             ];
             let acc = 0;
@@ -340,10 +349,10 @@ export function renderChart(container: HTMLElement, rows: RowData[], o: ChartOpt
                 }
             }
             // Ratetall etter stolpen (faktisk rate, ikke inkl. gap)
-            // Stiplet markør der forrige års rate lå
-            if (seg.delta !== null && row.prevRate !== null && row.prevRate > vMin) {
-                const px = scale(row.prevRate);
-                el("line", { x1: px, x2: px, y1: by - 3, y2: by + barH + 3, stroke: o.colors.text, "stroke-width": 1.5, "stroke-dasharray": "2 2" }, rg);
+            // Stiplet skillelinje mellom profitt fra før og årets justering (= forrige rate)
+            if (seg.s3 > 0 && seg.s4 > 0) {
+                const sx = scale(seg.s1 + seg.s2 + seg.s3);
+                if (sx > barX0) el("line", { x1: sx, x2: sx, y1: by, y2: by + barH, stroke: "#FFFFFF", "stroke-width": 1.5, "stroke-dasharray": "3 2" }, rg);
             }
             const rx = scale(acc) + 5;
             const rateTxt = fmt(seg.rate);
