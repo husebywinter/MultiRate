@@ -38,10 +38,10 @@ const color = (name: string, displayName: string, value: string) =>
     new formattingSettings.ColorPicker({ name, displayName, value: { value } });
 
 class ColorsCard extends Card {
-    costAtAdj = color("costAtAdj", "Kost ved siste justering", "#B4B2A9");
+    costAtAdj = color("costAtAdj", "Kost ved forrige justering", "#B4B2A9");
     costIncrease = color("costIncrease", "Kostøkning siden da", "#EF9F27");
-    profit = color("profit", "Profitt", "#378ADD");
-    adjustment = color("adjustment", "Justering dette året", "#1D9E75");
+    profit = color("profit", "Profitt", "#639922");
+    adjustment = color("adjustment", "Justering dette året", "#27500A");
     gap = color("gap", "Gap til forventet rate", "#E24B4A");
     statusOk = color("statusOk", "Status: justert", "#1D9E75");
     statusBad = color("statusBad", "Status: ujustert", "#E24B4A");
@@ -61,11 +61,12 @@ class LayoutCard extends Card {
     });
     showLegend = new formattingSettings.ToggleSwitch({ name: "showLegend", displayName: "Vis forklaring", value: true });
     showMargin = new formattingSettings.ToggleSwitch({ name: "showMargin", displayName: "Vis margin-kolonne", value: true });
+    showHours = new formattingSettings.ToggleSwitch({ name: "showHours", displayName: "Vis timer-kolonne", value: true });
     showGrid = new formattingSettings.ToggleSwitch({ name: "showGrid", displayName: "Vis rutenett", value: true });
     sortByHours = new formattingSettings.ToggleSwitch({ name: "sortByHours", displayName: "Sorter grupper etter timer", value: true });
     name = "layout";
     displayName = "Oppsett";
-    slices = [this.fontSize, this.maxRowHeight, this.showLegend, this.showMargin, this.showGrid, this.sortByHours];
+    slices = [this.fontSize, this.maxRowHeight, this.showLegend, this.showMargin, this.showHours, this.showGrid, this.sortByHours];
 }
 
 export class VisualFormattingSettingsModel extends Model {

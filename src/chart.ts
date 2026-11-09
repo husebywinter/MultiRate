@@ -38,6 +38,7 @@ export interface ChartOptions {
     maxRowHeight: number;
     showLegend: boolean;
     showMargin: boolean;
+    showHours: boolean;
     showGrid: boolean;
     sortByHours: boolean;
     colors: ChartColors;
@@ -49,6 +50,8 @@ export interface Segments {
     rate: number;
     expectedRate: number;
     margin: number | null;
+    delta: number | null;
+    deltaPct: number | null;
     lostRevenue: number;
     status: string;
     statusKind: "start" | "ok" | "bad" | "none";
@@ -94,6 +97,8 @@ export function computeSegments(r: RowData, g: number): Segments {
         rate: R,
         expectedRate: R + s5,
         margin: R ? (R - C) / R : null,
+        delta: isAdj && P !== null ? R - P : null,
+        deltaPct: isAdj && P ? (R - P) / P : null,
         lostRevenue: s5 * (r.hours ?? 0),
         status, statusKind
     };
@@ -143,7 +148,7 @@ export function renderChart(container: HTMLElement, rows: RowData[], o: ChartOpt
     if (!rows.length) {
         const msg = document.createElement("div");
         msg.className = "rav-empty";
-        msg.textContent = "Legg til Gruppe, År, Timer, Timepris, Kost i dag og Kost ved siste justering.";
+        msg.textContent = "Legg til Gruppe, År, Timer, Timepris, Kost i dag og Kost ved forrige justering.";
         container.appendChild(msg);
         return;
     }
@@ -170,7 +175,7 @@ export function renderChart(container: HTMLElement, rows: RowData[], o: ChartOpt
         lg.className = "rav-legend";
         lg.style.fontSize = `${fontBase}px`;
         const items: [string, string, boolean][] = [
-            ["Kost ved siste justering", o.colors.costAtAdj, false],
+            ["Kost ved forrige justering", o.colors.costAtAdj, false],
             ["Kostøkning siden da", o.colors.costIncrease, false],
             ["Profitt", o.colors.profit, false],
             ["Justering dette året", o.colors.adjustment, false],
@@ -217,9 +222,16 @@ export function renderChart(container: HTMLElement, rows: RowData[], o: ChartOpt
     for (const gr of groups) for (const r of gr.rows) maxStatus = Math.max(maxStatus, textWidth(r.seg.status, font));
     const statusW = maxStatus + font;
     const marginW = o.showMargin ? textWidth("100 %", font, true) + font * 1.2 : 0;
-    const rateLabelW = textWidth("10 000", font, true) + font * 0.8;
+    const deltaW = textWidth("▲ +100 (+10,0 %)", font * 0.92) + font * 0.6;
+    const rateLabelW = textWidth("10 000", font, true) + font * 0.8 + deltaW;
+    const hoursW = o.showHours ? font * 9 : 0;
+    let maxHours = 0;
+    for (const gr of groups) for (const r of gr.rows) maxHours = Math.max(maxHours, r.row.hours ?? 0);
+    const marginRight = width - pad - hoursW;
+    const hoursX = width - pad - hoursW + font * 1.2;
+    const hoursBarMax = Math.max(10, hoursW - font * 1.2 - textWidth("10 000", font * 0.92) - font * 0.6);
     const barX0 = pad + yearW + statusW + 4;
-    const barX1 = Math.max(barX0 + 40, width - marginW - rateLabelW - pad);
+    const barX1 = Math.max(barX0 + 40, width - hoursW - marginW - rateLabelW - pad);
 
     // Akse
     let vMax = 0;
@@ -250,8 +262,8 @@ export function renderChart(container: HTMLElement, rows: RowData[], o: ChartOpt
     // Kolonneoverskrifter
     const hdrY = headerH / 2;
     const muted = { fill: o.colors.text, "fill-opacity": 0.6, "font-size": font * 0.92 };
-    text(svg, barX1 + rateLabelW - 2, hdrY, "Rate", { ...muted, "text-anchor": "end" });
-    if (o.showMargin) text(svg, width - pad, hdrY, "Margin", { ...muted, "text-anchor": "end" });
+    if (o.showMargin) text(svg, marginRight, hdrY, "Margin", { ...muted, "text-anchor": "end" });
+    if (o.showHours) text(svg, hoursX, hdrY, "Timer", muted);
 
     // Rutenett
     if (o.showGrid) {
@@ -299,8 +311,8 @@ export function renderChart(container: HTMLElement, rows: RowData[], o: ChartOpt
             const parts: { v: number; color: string; label: string; labelColor: string; hatch?: boolean }[] = [
                 { v: seg.s1, color: o.colors.costAtAdj, label: fmt(seg.s1), labelColor: "#2C2C2A" },
                 { v: seg.s2, color: o.colors.costIncrease, label: `+${fmt(seg.s2)}`, labelColor: "#412402" },
-                { v: seg.s3, color: o.colors.profit, label: fmt(seg.s3), labelColor: "#FFFFFF" },
-                { v: seg.s4, color: o.colors.adjustment, label: `+${fmt(seg.s4)}`, labelColor: "#FFFFFF" },
+                { v: seg.s3, color: o.colors.profit, label: fmt(seg.s3), labelColor: "#173404" },
+                { v: seg.s4, color: o.colors.adjustment, label: `+${fmt(seg.s4)}`, labelColor: "#EAF3DE" },
                 { v: seg.s5, color: o.colors.gap, label: `+${fmt(seg.s5)}`, labelColor: o.colors.gap, hatch: true }
             ];
             let acc = 0;
@@ -328,9 +340,28 @@ export function renderChart(container: HTMLElement, rows: RowData[], o: ChartOpt
                 }
             }
             // Ratetall etter stolpen (faktisk rate, ikke inkl. gap)
-            text(rg, scale(acc) + 5, cy, fmt(seg.rate), { fill: o.colors.text, "font-weight": 600, "font-size": font });
+            // Stiplet markør der forrige års rate lå
+            if (seg.delta !== null && row.prevRate !== null && row.prevRate > vMin) {
+                const px = scale(row.prevRate);
+                el("line", { x1: px, x2: px, y1: by - 3, y2: by + barH + 3, stroke: o.colors.text, "stroke-width": 1.5, "stroke-dasharray": "2 2" }, rg);
+            }
+            const rx = scale(acc) + 5;
+            const rateTxt = fmt(seg.rate);
+            text(rg, rx, cy, rateTxt, { fill: o.colors.text, "font-weight": 600, "font-size": font });
+            if (seg.delta !== null && seg.deltaPct !== null) {
+                const pct = (seg.deltaPct * 100).toLocaleString("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+                const sign = seg.delta >= 0 ? "▲ +" : "▼ ";
+                text(rg, rx + textWidth(rateTxt, font, true) + font * 0.6, cy, `${sign}${fmt(seg.delta)} (${seg.delta >= 0 ? "+" : ""}${pct} %)`, {
+                    fill: o.colors.statusOk, "font-weight": 600, "font-size": font * 0.92
+                });
+            }
+            if (o.showHours) {
+                const hw = Math.max(2, ((row.hours ?? 0) / Math.max(1, maxHours)) * hoursBarMax);
+                el("rect", { x: hoursX, y: cy - barH * 0.28, width: hw, height: barH * 0.56, rx: 2, fill: o.colors.text, "fill-opacity": 0.3 }, rg);
+                text(rg, hoursX + hw + 5, cy, fmt(row.hours ?? 0), { fill: o.colors.text, "fill-opacity": 0.7, "font-size": font * 0.92 });
+            }
             if (o.showMargin && seg.margin !== null) {
-                text(rg, width - pad, cy, `${Math.round(seg.margin * 100)} %`, {
+                text(rg, marginRight, cy, `${Math.round(seg.margin * 100)} %`, {
                     fill: o.colors.text, "font-size": font, "text-anchor": "end"
                 });
             }

@@ -12,8 +12,8 @@ import { renderChart } from "./chart.js";
 let i=0;const R=(group,year,hours,rate,prevRate,cost,costAtAdj,yearsWithout,startup,adjusted)=>({index:i++,group,year,hours,rate,prevRate,cost,costAtAdj,yearsWithout,startup,adjusted});
 const rows=[
  R("10209127-05","2024",162.5,1220,null,1135,1135,0,1,0),
- R("10209127-05","2025",1730.5,1264,1220,1161,1161,0,0,1),
- R("10209127-05","2026",1622,1300,1264,1200,1200,0,0,1),
+ R("10209127-05","2025",1730.5,1264,1220,1161,1135,0,0,1),
+ R("10209127-05","2026",1622,1300,1264,1200,1161,0,0,1),
  R("Equinor","2022",300,1200,null,720,720,0,1,0),
  R("Equinor","2023",300,1250,1200,750,750,0,0,1),
  R("Equinor","2024",300,1250,1250,770,750,1,0,0),
@@ -23,9 +23,9 @@ const rows=[
  R("DNB","2025",210,1180,1180,800,780,1,0,0),
  R("DNB","2026",210,1180,1180,810,780,2,0,0),
 ];
-const colors={costAtAdj:"#B4B2A9",costIncrease:"#EF9F27",profit:"#378ADD",adjustment:"#1D9E75",gap:"#E24B4A",statusOk:"#1D9E75",statusBad:"#E24B4A",text:"#252423"};
+const colors={costAtAdj:"#B4B2A9",costIncrease:"#EF9F27",profit:"#639922",adjustment:"#27500A",gap:"#E24B4A",statusOk:"#1D9E75",statusBad:"#E24B4A",text:"#252423"};
 const v=document.getElementById("v");v.style.width="900px";v.style.height="520px";v.style.overflowY="auto";
 const sel=new Set();
-const draw=()=>renderChart(v,rows,{width:900,height:520,adjustmentRate:0.045,autoAxis:true,axisMin:0,fontSize:11,maxRowHeight:30,showLegend:true,showMargin:true,showGrid:true,sortByHours:true,colors,selected:sel},{onSelect:(ix,m)=>{if(!m)sel.clear();ix.forEach(x=>sel.add(x));draw();},onClear:()=>{sel.clear();draw();},onContextMenu(){},onHover(){}},"t");
+const draw=()=>renderChart(v,rows,{width:900,height:520,adjustmentRate:0.045,autoAxis:true,axisMin:0,fontSize:11,maxRowHeight:30,showLegend:true,showMargin:true,showHours:true,showGrid:true,sortByHours:true,colors,selected:sel},{onSelect:(ix,m)=>{if(!m)sel.clear();ix.forEach(x=>sel.add(x));draw();},onClear:()=>{sel.clear();draw();},onContextMenu(){},onHover(){}},"t");
 draw();
 </script></body></html>

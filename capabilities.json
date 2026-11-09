@@ -6,7 +6,7 @@
         { "displayName": "Timepris (siste rate)", "name": "rate", "kind": "Measure" },
         { "displayName": "Forrige års rate", "name": "prevRate", "kind": "Measure" },
         { "displayName": "Kost i dag", "name": "cost", "kind": "Measure" },
-        { "displayName": "Kost ved siste justering", "name": "costAtAdj", "kind": "Measure" },
+        { "displayName": "Kost ved forrige justering", "name": "costAtAdj", "kind": "Measure" },
         { "displayName": "År uten justering", "name": "yearsWithout", "kind": "Measure" },
         { "displayName": "Oppstart (1/0)", "name": "startup", "kind": "Measure" },
         { "displayName": "Justert (1/0)", "name": "adjusted", "kind": "Measure" }
@@ -70,6 +70,7 @@
                 "maxRowHeight": { "type": { "numeric": true } },
                 "showLegend": { "type": { "bool": true } },
                 "showMargin": { "type": { "bool": true } },
+                "showHours": { "type": { "bool": true } },
                 "showGrid": { "type": { "bool": true } },
                 "sortByHours": { "type": { "bool": true } }
             }

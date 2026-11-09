@@ -121,6 +121,7 @@ export class Visual implements IVisual {
             maxRowHeight: s.layout.maxRowHeight.value ?? 30,
             showLegend: s.layout.showLegend.value,
             showMargin: s.layout.showMargin.value,
+            showHours: s.layout.showHours.value,
             showGrid: s.layout.showGrid.value,
             sortByHours: s.layout.sortByHours.value,
             colors: {
@@ -171,7 +172,8 @@ export class Visual implements IVisual {
             { displayName: "Timepris", value: f(seg.rate) },
             { displayName: "Forrige års rate", value: f(row.prevRate) },
             { displayName: "Kost i dag", value: f(row.cost) },
-            { displayName: "Kost ved siste justering", value: f(row.costAtAdj) },
+            { displayName: "Kost ved forrige justering", value: f(row.costAtAdj) },
+            { displayName: "Endring fra i fjor", value: seg.delta === null ? "–" : `${f(seg.delta)} kr (${((seg.deltaPct ?? 0) * 100).toFixed(1)} %)` },
             { displayName: "Margin", value: seg.margin === null ? "–" : `${(seg.margin * 100).toFixed(1)} %` }
         ];
         if (seg.s5 > 0) {

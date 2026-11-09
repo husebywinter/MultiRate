@@ -4,13 +4,13 @@ Viser timerate per prosjekt og år som en stablet stolpe:
 
 | Segment | Betydning |
 |---|---|
-| Grå | Kost ved siste justering |
+| Grå | Kost ved forrige justering (i justerte år: kosten ved justeringen før) |
 | Oransje | Kostøkning siden siste justering |
-| Blå | Profitt |
-| Grønn | Justering dette året |
+| Lysegrønn | Profitt |
+| Grønn | Justering dette året (mørkegrønn), med stiplet markør ved forrige rate og ▲ +kr (+%) etter raten |
 | Rødt skravert | Gap til forventet rate (kun ujusterte år): rate × ((1 + sats)^år uten − 1) |
 
-Til høyre: faktisk rate og margin. Status per år: *Oppstart*, *Justert* eller *N år uten*.
+Til høyre: faktisk rate, endring fra i fjor, margin og timer (med liten volumstolpe). Status per år: *Oppstart*, *Justert* eller *N år uten*.
 
 ## Installer
 
@@ -28,7 +28,7 @@ Spørringen i [`sql/RateAar.pq`](sql/RateAar.pq) gir én rad per prosjekt × ans
 | Timepris (siste rate) | LastHourlyRate | **Gjennomsnitt** |
 | Forrige års rate | PrevYearLastHourlyRate | **Gjennomsnitt** |
 | Kost i dag | LastUnitCost | **Gjennomsnitt** |
-| Kost ved siste justering | KostVedJustering | **Gjennomsnitt** |
+| Kost ved forrige justering | KostForrigeJustering | **Gjennomsnitt** |
 | År uten justering | AarUtenJustering | **Maksimum** |
 | Oppstart (1/0) | Oppstart | **Maksimum** |
 | Justert (1/0) | RateAdjusted | **Maksimum** |
@@ -39,7 +39,7 @@ Visualen er laget for én ansatt om gangen (filtrer på ansatt). Med flere ansat
 
 - **Beregning:** forventet årlig justering (standard 4,5 %), automatisk/manuell akse-start
 - **Farger:** alle segmenter, statusfarger og tekst
-- **Oppsett:** skriftstørrelse, maks radhøyde, forklaring, margin-kolonne, rutenett, sortering
+- **Oppsett:** skriftstørrelse, maks radhøyde, forklaring, margin-kolonne, timer-kolonne, rutenett, sortering
 
 Klikk på en rad eller et gruppenavn for å kryssfiltrere; Ctrl+klikk for flervalg.
 

@@ -61,6 +61,12 @@ let
             PrevYearLastHourlyRate,
             LastUnitCost,
             KostVedJustering,
+            -- Kost ved forrige justering: i justerte år hentes kosten fra justeringen før,
+            -- slik at kostøkningen som utløste justeringen synes.
+            CASE WHEN RateAdjusted = 1
+                 THEN LAG(KostVedJustering) OVER (PARTITION BY ProjectNumber, EmployeeNumber ORDER BY Year)
+                 ELSE KostVedJustering
+            END                                                                  AS KostForrigeJustering,
             SisteJusteringsAar,
             Year - SisteJusteringsAar                                            AS AarUtenJustering,
             Oppstart,
@@ -76,6 +82,7 @@ let
         {"PrevYearLastHourlyRate", type number},
         {"LastUnitCost",           type number},
         {"KostVedJustering",       type number},
+        {"KostForrigeJustering",   type number},
         {"Year",                   Int64.Type},
         {"SisteJusteringsAar",     Int64.Type},
         {"AarUtenJustering",       Int64.Type},
