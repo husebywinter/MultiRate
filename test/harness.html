@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Ratejustering test</title>
+<style>
+body{margin:0;background:#fff;font-family:Segoe UI,sans-serif}
+#v{border:1px solid #ddd;margin:10px}
+.rav-legend{display:flex;flex-wrap:wrap;gap:4px 14px;padding:2px 4px 4px}
+.rav-legend-item{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.rav-swatch{display:inline-block;width:11px;height:11px;border-radius:2px;box-sizing:border-box}
+.rav-svg{display:block}.rav-row:hover>rect:first-child{fill:rgba(128,128,128,.08)}
+</style></head><body><div id="v" class="rav-root"></div>
+<script type="module">
+import { renderChart } from "./chart.js";
+let i=0;const R=(group,year,hours,rate,prevRate,cost,costAtAdj,yearsWithout,startup,adjusted)=>({index:i++,group,year,hours,rate,prevRate,cost,costAtAdj,yearsWithout,startup,adjusted});
+const rows=[
+ R("10209127-05","2024",162.5,1220,null,1135,1135,0,1,0),
+ R("10209127-05","2025",1730.5,1264,1220,1161,1161,0,0,1),
+ R("10209127-05","2026",1622,1300,1264,1200,1200,0,0,1),
+ R("Equinor","2022",300,1200,null,720,720,0,1,0),
+ R("Equinor","2023",300,1250,1200,750,750,0,0,1),
+ R("Equinor","2024",300,1250,1250,770,750,1,0,0),
+ R("Equinor","2025",300,1250,1250,800,750,2,0,0),
+ R("Equinor","2026",300,1250,1250,820,750,3,0,0),
+ R("DNB","2024",200,1180,1140,780,780,0,0,1),
+ R("DNB","2025",210,1180,1180,800,780,1,0,0),
+ R("DNB","2026",210,1180,1180,810,780,2,0,0),
+];
+const colors={costAtAdj:"#B4B2A9",costIncrease:"#EF9F27",profit:"#378ADD",adjustment:"#1D9E75",gap:"#E24B4A",statusOk:"#1D9E75",statusBad:"#E24B4A",text:"#252423"};
+const v=document.getElementById("v");v.style.width="900px";v.style.height="520px";v.style.overflowY="auto";
+const sel=new Set();
+const draw=()=>renderChart(v,rows,{width:900,height:520,adjustmentRate:0.045,autoAxis:true,axisMin:0,fontSize:11,maxRowHeight:30,showLegend:true,showMargin:true,showGrid:true,sortByHours:true,colors,selected:sel},{onSelect:(ix,m)=>{if(!m)sel.clear();ix.forEach(x=>sel.add(x));draw();},onClear:()=>{sel.clear();draw();},onContextMenu(){},onHover(){}},"t");
+draw();
+</script></body></html>

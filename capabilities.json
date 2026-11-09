@@ -1,0 +1,87 @@
+{
+    "dataRoles": [
+        { "displayName": "Gruppe (prosjekt)", "name": "group", "kind": "Grouping" },
+        { "displayName": "År", "name": "year", "kind": "Grouping" },
+        { "displayName": "Timer", "name": "hours", "kind": "Measure" },
+        { "displayName": "Timepris (siste rate)", "name": "rate", "kind": "Measure" },
+        { "displayName": "Forrige års rate", "name": "prevRate", "kind": "Measure" },
+        { "displayName": "Kost i dag", "name": "cost", "kind": "Measure" },
+        { "displayName": "Kost ved siste justering", "name": "costAtAdj", "kind": "Measure" },
+        { "displayName": "År uten justering", "name": "yearsWithout", "kind": "Measure" },
+        { "displayName": "Oppstart (1/0)", "name": "startup", "kind": "Measure" },
+        { "displayName": "Justert (1/0)", "name": "adjusted", "kind": "Measure" }
+    ],
+    "dataViewMappings": [
+        {
+            "conditions": [
+                {
+                    "group": { "max": 1 }, "year": { "max": 1 },
+                    "hours": { "max": 1 }, "rate": { "max": 1 }, "prevRate": { "max": 1 },
+                    "cost": { "max": 1 }, "costAtAdj": { "max": 1 }, "yearsWithout": { "max": 1 },
+                    "startup": { "max": 1 }, "adjusted": { "max": 1 }
+                }
+            ],
+            "categorical": {
+                "categories": {
+                    "select": [
+                        { "bind": { "to": "group" } },
+                        { "bind": { "to": "year" } }
+                    ],
+                    "dataReductionAlgorithm": { "top": { "count": 5000 } }
+                },
+                "values": {
+                    "select": [
+                        { "bind": { "to": "hours" } },
+                        { "bind": { "to": "rate" } },
+                        { "bind": { "to": "prevRate" } },
+                        { "bind": { "to": "cost" } },
+                        { "bind": { "to": "costAtAdj" } },
+                        { "bind": { "to": "yearsWithout" } },
+                        { "bind": { "to": "startup" } },
+                        { "bind": { "to": "adjusted" } }
+                    ]
+                }
+            }
+        }
+    ],
+    "objects": {
+        "calc": {
+            "properties": {
+                "adjustmentRate": { "type": { "numeric": true } },
+                "autoAxis": { "type": { "bool": true } },
+                "axisMin": { "type": { "numeric": true } }
+            }
+        },
+        "colors": {
+            "properties": {
+                "costAtAdj": { "type": { "fill": { "solid": { "color": true } } } },
+                "costIncrease": { "type": { "fill": { "solid": { "color": true } } } },
+                "profit": { "type": { "fill": { "solid": { "color": true } } } },
+                "adjustment": { "type": { "fill": { "solid": { "color": true } } } },
+                "gap": { "type": { "fill": { "solid": { "color": true } } } },
+                "statusOk": { "type": { "fill": { "solid": { "color": true } } } },
+                "statusBad": { "type": { "fill": { "solid": { "color": true } } } },
+                "text": { "type": { "fill": { "solid": { "color": true } } } }
+            }
+        },
+        "layout": {
+            "properties": {
+                "fontSize": { "type": { "formatting": { "fontSize": true } } },
+                "maxRowHeight": { "type": { "numeric": true } },
+                "showLegend": { "type": { "bool": true } },
+                "showMargin": { "type": { "bool": true } },
+                "showGrid": { "type": { "bool": true } },
+                "sortByHours": { "type": { "bool": true } }
+            }
+        }
+    },
+    "tooltips": {
+        "supportedTypes": { "default": true, "canvas": true },
+        "roles": []
+    },
+    "supportsLandingPage": true,
+    "supportsEmptyDataView": true,
+    "supportsMultiVisualSelection": true,
+    "suppressDefaultTitle": false,
+    "privileges": []
+}

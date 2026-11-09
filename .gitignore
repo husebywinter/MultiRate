@@ -1,0 +1,5 @@
+node_modules/
+.tmp/
+webpack.statistics.*.html
+test/chart.js
+dist/package.json

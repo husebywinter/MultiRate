@@ -1,0 +1,42 @@
+.rav-root {
+    font-family: "Segoe UI", wf_segoe-ui_normal, helvetica, arial, sans-serif;
+    box-sizing: border-box;
+    user-select: none;
+
+    .rav-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 14px;
+        padding: 2px 4px 4px;
+    }
+
+    .rav-legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        white-space: nowrap;
+    }
+
+    .rav-swatch {
+        display: inline-block;
+        width: 11px;
+        height: 11px;
+        border-radius: 2px;
+        box-sizing: border-box;
+    }
+
+    .rav-svg {
+        display: block;
+        overflow: visible;
+    }
+
+    .rav-row:hover > rect:first-child {
+        fill: rgba(128, 128, 128, 0.08);
+    }
+
+    .rav-empty {
+        padding: 16px;
+        opacity: 0.7;
+        font-size: 12px;
+    }
+}
