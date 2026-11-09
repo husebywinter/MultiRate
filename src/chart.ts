@@ -349,6 +349,11 @@ export function renderChart(container: HTMLElement, rows: RowData[], o: ChartOpt
                 }
             }
             // Ratetall etter stolpen (faktisk rate, ikke inkl. gap)
+            // Stiplet skillelinje mellom kost ved forrige justering og kostøkning
+            if (seg.s1 > 0 && seg.s2 > 0) {
+                const kx = scale(seg.s1);
+                if (kx > barX0) el("line", { x1: kx, x2: kx, y1: by, y2: by + barH, stroke: "#FFFFFF", "stroke-width": 1.5, "stroke-dasharray": "3 2" }, rg);
+            }
             // Stiplet skillelinje mellom profitt fra før og årets justering (= forrige rate)
             if (seg.s3 > 0 && seg.s4 > 0) {
                 const sx = scale(seg.s1 + seg.s2 + seg.s3);

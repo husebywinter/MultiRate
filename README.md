@@ -5,7 +5,7 @@ Viser timerate per prosjekt og år som en stablet stolpe:
 | Segment | Betydning |
 |---|---|
 | Lys gul | Kost ved forrige justering (i justerte år: kosten ved justeringen før) |
-| Mørk gul | Kostøkning siden da |
+| Mørk gul | Kostøkning siden da, adskilt med stiplet linje |
 | Grønn | Profitt fra før |
 | Mørkere grønn | Profitt fra årets justering, adskilt med stiplet linje (= forrige rate) |
 | Rødt skravert | Gap til forventet rate (kun ujusterte år): rate × ((1 + sats)^år uten − 1) |
